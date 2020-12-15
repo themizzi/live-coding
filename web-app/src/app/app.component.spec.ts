@@ -3,7 +3,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
-  beforeEach(async () => {
+  it('should create the app', async () => {
+    // GIVEN
     await TestBed.configureTestingModule({
       imports: [
         RouterTestingModule
@@ -12,24 +13,12 @@ describe('AppComponent', () => {
         AppComponent
       ],
     }).compileComponents();
-  });
 
-  it('should create the app', () => {
+    // WHEN
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
+
+    // THEN
     expect(app).toBeTruthy();
-  });
-
-  it(`should have as title 'web-app'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('web-app');
-  });
-
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('.content span').textContent).toContain('web-app app is running!');
   });
 });
