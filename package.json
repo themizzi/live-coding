@@ -1,0 +1,22 @@
+{
+  "name": "livecoding",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/themizzi/live-coding.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/themizzi/live-coding/issues"
+  },
+  "homepage": "https://github.com/themizzi/live-coding#readme",
+  "dependencies": {
+    "husky": "^4.3.6"
+  }
+}
