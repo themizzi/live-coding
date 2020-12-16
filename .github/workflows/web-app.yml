@@ -19,7 +19,7 @@ jobs:
         working-directory: web-app
       - run: npm run lint
         working-directory: web-app
-      - run: npm run test -- --watch false
+      - run: npm run test -- --no-watch --code-coverage
         working-directory: web-app
       - uses: cypress-io/github-action@v2
         with:
