@@ -1,0 +1,36 @@
+name: Web App
+
+on:
+  pull_request:
+    branches:
+      - alpha
+    paths:
+      - 'web-app/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: '14'
+      - run: npm install
+        working-directory: web-app
+      - run: npm run lint
+        working-directory: web-app
+      - run: npm run test -- --no-watch --code-coverage
+        working-directory: web-app
+      - uses: cypress-io/github-action@v2
+        with:
+          start: npm start
+          working-directory: web-app
+          wait-on: 'http://localhost:4200'
+      - uses: actions/upload-artifact@v2
+        with:
+          name: cypress video artifacts
+          path: web-app/cypress/videos
+      - uses: actions/upload-artifact@v2
+        with:
+          name: cypress screenshot artifacts
+          path: web-app/cypress/screenshots
