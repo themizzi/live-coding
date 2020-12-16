@@ -1,0 +1,5 @@
+{
+  "cucumberautocomplete.steps": [
+    "web-app/cypress/integration/**/**.steps.js"
+  ]
+}
