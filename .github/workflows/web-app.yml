@@ -25,3 +25,11 @@ jobs:
         with:
           start: npm start
           working-directory: web-app
+      - uses: actions/upload-artifact@v2
+        with:
+          name: cypress screenshot artifacts
+          path: web-app/cypress/videos
+      - uses: actions/upload-artifact@v2
+        with:
+          name: cypress video artifacts
+          path: web-app/cypress/screenshots
