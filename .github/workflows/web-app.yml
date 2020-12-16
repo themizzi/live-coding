@@ -27,9 +27,9 @@ jobs:
           working-directory: web-app
       - uses: actions/upload-artifact@v2
         with:
-          name: cypress screenshot artifacts
+          name: cypress video artifacts
           path: web-app/cypress/videos
       - uses: actions/upload-artifact@v2
         with:
-          name: cypress video artifacts
+          name: cypress screenshot artifacts
           path: web-app/cypress/screenshots
