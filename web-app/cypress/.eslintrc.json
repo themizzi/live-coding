@@ -3,9 +3,14 @@
   "rules": {
     "node/no-unpublished-require": "off"
   },
-  "parser": "babel-eslint",
-  "parserOptions": {
-    "sourceType": "module",
-    "allowImportExportEverywhere": true
+  "env": {
+    "browser": true,
+    "mocha": true
+  },
+  "globals": {
+    "cy": true,
+    "Cypress": true,
+    "expect": true,
+    "assert": true
   }
 }
