@@ -21,3 +21,7 @@ jobs:
         working-directory: web-app
       - run: npm run test -- --watch false
         working-directory: web-app
+      - uses: cypress-io/github-action@v2
+        with:
+          start: npm start
+          working-directory: web-app
