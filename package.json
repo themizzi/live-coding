@@ -16,10 +16,8 @@
     "url": "https://github.com/themizzi/live-coding/issues"
   },
   "homepage": "https://github.com/themizzi/live-coding#readme",
-  "dependencies": {
-    "husky": "^4.3.6"
-  },
   "devDependencies": {
+    "husky": "^4.3.6",
     "@commitlint/cli": "^11.0.0",
     "@commitlint/config-conventional": "^11.0.0"
   }
