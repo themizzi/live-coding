@@ -17,7 +17,7 @@ jobs:
           node-version: '14'
       - run: npm install
         working-directory: web-app
-      - run: npm lint
+      - run: npm run lint
         working-directory: web-app
       - run: npm run test -- --watch false
         working-directory: web-app
