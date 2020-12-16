@@ -25,6 +25,7 @@ jobs:
         with:
           start: npm start
           working-directory: web-app
+          wait-on: 'http://localhost:4200'
       - uses: actions/upload-artifact@v2
         with:
           name: cypress video artifacts
