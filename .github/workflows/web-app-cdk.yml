@@ -20,4 +20,4 @@ jobs:
         with:
           node-version: '14'
       - run: npm install
-      - run: npm test -- --no-watch --code-coverage
+      - run: npm test
