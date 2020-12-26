@@ -10,7 +10,9 @@ import {App} from '@aws-cdk/core';
 import {GitHubActionsUserStack} from './github-actions-user-stack';
 
 test('Empty Stack', () => {
+  // GIVEN
   const app = new App();
+
   // WHEN
   const stack = new GitHubActionsUserStack(app, 'MyTestStack');
   // THEN

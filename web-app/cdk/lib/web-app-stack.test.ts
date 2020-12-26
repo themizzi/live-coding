@@ -3,7 +3,9 @@ import {App} from '@aws-cdk/core';
 import {WebAppStack} from './web-app-stack';
 
 test('Empty Stack', () => {
+  // GIVEN
   const app = new App();
+
   // WHEN
   const stack = new WebAppStack(app, 'MyTestStack');
   // THEN
