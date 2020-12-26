@@ -7,14 +7,14 @@ import {
   arrayWith,
 } from '@aws-cdk/assert';
 import {App} from '@aws-cdk/core';
-import {GitHubActionsUserStack} from './github-actions-user-stack';
+import {WebAppCIUserStack} from './web-app-ci-user-stack';
 
 test('Empty Stack', () => {
   // GIVEN
   const app = new App();
 
   // WHEN
-  const stack = new GitHubActionsUserStack(app, 'MyTestStack');
+  const stack = new WebAppCIUserStack(app, 'MyTestStack');
   // THEN
   expectCDK(stack).to(
     matchTemplate(
@@ -31,7 +31,7 @@ test('User created with username', () => {
   const app = new App();
 
   // WHEN
-  const stack = new GitHubActionsUserStack(app, 'MyTestStack', {
+  const stack = new WebAppCIUserStack(app, 'MyTestStack', {
     user: {
       username: 'test-user',
     },
@@ -109,7 +109,7 @@ test('User created with username', () => {
               : resourceExpectations[0];
 
           // WHEN
-          const stack = new GitHubActionsUserStack(app, 'MyTestStack', {
+          const stack = new WebAppCIUserStack(app, 'MyTestStack', {
             user: {
               resourceStackNames: stackNames,
               regions: regions,

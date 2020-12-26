@@ -7,7 +7,7 @@ import {
   User,
 } from '@aws-cdk/aws-iam';
 
-export interface GitHubActionsStackProps extends StackProps {
+export interface CIUserStackProps extends StackProps {
   user?: {
     username?: string;
     resourceStackNames?: string[];
@@ -16,8 +16,8 @@ export interface GitHubActionsStackProps extends StackProps {
   };
 }
 
-export class GitHubActionsUserStack extends Stack {
-  constructor(scope: Construct, id: string, props?: GitHubActionsStackProps) {
+export class WebAppCIUserStack extends Stack {
+  constructor(scope: Construct, id: string, props?: CIUserStackProps) {
     super(scope, id, props);
 
     if (props?.user) {
@@ -62,17 +62,17 @@ export class GitHubActionsUserStack extends Stack {
         statements: [stackStatement, toolkitStatement],
       });
 
-      const policy = new Policy(this, 'GitHubActionPolicy', {
+      const policy = new Policy(this, 'WebAppCIUserPolicy', {
         document: policyDocument,
       });
 
-      const user = new User(this, 'GithubActionsUser', {
-        userName: props.user.username,
+      const user = new User(this, 'WebAppCIUser', {
+        userName: props.user.username ?? 'web-app-ci-user',
       });
 
       user.attachInlinePolicy(policy);
 
-      new CfnOutput(this, 'GitHubActionsWebAppUsername', {
+      new CfnOutput(this, 'WebAppCIUsername', {
         value: user.userName,
       });
     }
