@@ -2,6 +2,7 @@
 import 'source-map-support/register';
 import * as cdk from '@aws-cdk/core';
 import {WebAppStack} from '../lib/web-app-stack';
+<<<<<<< HEAD
 import {WebAppCIUserStack} from '../lib/web-app-ci-user-stack';
 
 const app = new cdk.App();
@@ -24,3 +25,8 @@ if (app.node.tryGetContext('stack') === 'github-actions-user') {
   const stackName = app.node.tryGetContext('stackName') ?? 'WebAppStack';
   new WebAppStack(app, stackName);
 }
+=======
+
+const app = new cdk.App();
+new WebAppStack(app, 'CdkStack');
+>>>>>>> feature/dev-cd

@@ -8,6 +8,7 @@ test('Empty Stack', () => {
 
   // WHEN
   const stack = new WebAppStack(app, 'MyTestStack');
+
   // THEN
   expectCDK(stack).to(
     matchTemplate(
