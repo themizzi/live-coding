@@ -17,6 +17,6 @@ jobs:
         with:
           node-version: '14'
       - run: npm install
-        working-directory: web-app
+        working-directory: web-app-cdk
       - run: npm test -- --no-watch --code-coverage
-        working-directory: web-app
+        working-directory: web-app-cdk
