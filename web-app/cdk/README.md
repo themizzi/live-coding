@@ -19,7 +19,7 @@ To create a user for use in CI, run the following command:
 
 ```bash
 npm run cdk -- deploy \
--c stack=github-actions-user \
+-c stack=ci-user \
 -c username={username} \
 -c resourceStackNames={resourceStackNames} \
 -c regions={regions} \

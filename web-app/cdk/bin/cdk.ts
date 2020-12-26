@@ -6,7 +6,7 @@ import {WebAppCIUserStack} from '../lib/web-app-ci-user-stack';
 
 const app = new cdk.App();
 
-if (app.node.tryGetContext('stack') === 'github-actions-user') {
+if (app.node.tryGetContext('stack') === 'ci-user') {
   const stackName = app.node.tryGetContext('stackName') ?? 'WebAppCIUserStack';
   const resourceStackNames = app.node.tryGetContext('resourceStackNames');
   const regions = app.node.tryGetContext('regions');
