@@ -84,7 +84,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: us-east-1
           PR_NUMBER: ${{ github.event.pull_request.number }}
-          BASE_REF: ${{ github.event.base_ref }}
+          BASE_REF: ${{ github.base_ref }}
       - run: npm run cdk -- deploy -c stackName=WebApp-$BRANCH -c bucketName=${BRANCH//\//-} -c sourcePath=$(pwd)/../build --require-approval never
         if: ${{ github.event_name == 'push' }}
         env:
