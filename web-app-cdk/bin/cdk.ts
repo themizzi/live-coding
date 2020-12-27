@@ -19,6 +19,9 @@ if (app.node.tryGetContext('stack') === 'ci-user') {
         : undefined,
       accountNumber: app.node.tryGetContext('accountNumber'),
       regions: regions ? regions.split(',') : undefined,
+      rolePolicyResourcePrefix: app.node.tryGetContext(
+        'rolePolicyResourcePrefix'
+      ),
     },
   });
 } else {

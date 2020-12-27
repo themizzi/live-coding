@@ -13,6 +13,7 @@ export interface CIUserStackProps extends StackProps {
     resourceStackNames?: string[];
     regions?: string[];
     accountNumber?: string;
+    rolePolicyResourcePrefix?: string;
   };
 }
 
@@ -55,6 +56,14 @@ export class WebAppCIUserStack extends Stack {
       bucketStatement.addActions('s3:CreateBucket');
       bucketStatement.addResources('arn:aws:s3:::web-app*');
 
+      const iamRoleStatement = new PolicyStatement({
+        effect: Effect.ALLOW,
+      });
+      iamRoleStatement.addActions('iam:CreateRole');
+      iamRoleStatement.addResources(
+        `arn:aws:iam:::role/${props.user.rolePolicyResourcePrefix ?? ''}*`
+      );
+
       const toolkitStatement = new PolicyStatement({
         effect: Effect.ALLOW,
       });
@@ -83,6 +92,7 @@ export class WebAppCIUserStack extends Stack {
           toolkitStatement,
           stagingBucketStatement,
           bucketStatement,
+          iamRoleStatement,
         ],
       });
 
