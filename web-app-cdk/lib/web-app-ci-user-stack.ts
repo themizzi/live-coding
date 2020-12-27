@@ -53,9 +53,19 @@ export class WebAppCIUserStack extends Stack {
       const bucketStatement = new PolicyStatement({
         effect: Effect.ALLOW,
       });
-      bucketStatement.addActions('s3:CreateBucket');
+      bucketStatement.addActions(
+        's3:CreateBucket',
+        's3:PutBucketPublicAccessBlock',
+        's3:PutBucketPolicy',
+        's3:GetBucketPolicy',
+        's3:DeleteBucketPolicy'
+      );
       bucketStatement.addResources(
-        `arn:aws:s3:::${props.user.rolePolicyResourcePrefix ?? ''}*`
+        `arn:aws:s3:::${
+          props.user.rolePolicyResourcePrefix
+            ? props.user.rolePolicyResourcePrefix.toLowerCase()
+            : ''
+        }*`
       );
 
       const iamRoleStatement = new PolicyStatement({
@@ -64,7 +74,13 @@ export class WebAppCIUserStack extends Stack {
       iamRoleStatement.addActions(
         'iam:CreateRole',
         'iam:AttachRolePolicy',
-        'iam:DetachRolePolicy'
+        'iam:DetachRolePolicy',
+        'iam:DeleteRole',
+        'iam:GetRolePolicy',
+        'iam:PutRolePolicy',
+        'iam:DeleteRolePolicy',
+        'iam:GetRole',
+        'iam:PassRole'
       );
       iamRoleStatement.addResources(
         `arn:aws:iam::*:role/${props.user.rolePolicyResourcePrefix ?? ''}*`
@@ -74,7 +90,32 @@ export class WebAppCIUserStack extends Stack {
         effect: Effect.ALLOW,
       });
       cloudfrontStatement.addActions(
-        'cloudfront:CreateCloudFrontOriginAccessIdentity'
+        'cloudfront:CreateCloudFrontOriginAccessIdentity',
+        'cloudfront:GetCloudFrontOriginAccessIdentityConfig',
+        'cloudfront:DeleteCloudFrontOriginAccessIdentity',
+        'cloudfront:GetCloudFrontOriginAccessIdentity',
+        'cloudfront:CreateDistribution',
+        'cloudfront:TagResource',
+        'cloudfront:GetDistribution',
+        'cloudfront:UpdateDistribution',
+        'cloudfront:DeleteDistribution'
+      );
+      cloudfrontStatement.addResources('*');
+
+      const lambdaStatement = new PolicyStatement({
+        effect: Effect.ALLOW,
+      });
+      lambdaStatement.addActions(
+        'lambda:CreateFunction',
+        'lambda:GetFunctionConfiguration',
+        'lambda:DeleteFunction',
+        'lambda:GetFunction',
+        'lambda:InvokeFunction'
+      );
+      lambdaStatement.addResources(
+        `arn:aws:lambda:*:*:function:${
+          props.user.rolePolicyResourcePrefix ?? ''
+        }*`
       );
 
       const toolkitStatement = new PolicyStatement({
@@ -106,6 +147,8 @@ export class WebAppCIUserStack extends Stack {
           stagingBucketStatement,
           bucketStatement,
           iamRoleStatement,
+          cloudfrontStatement,
+          lambdaStatement,
         ],
       });
 

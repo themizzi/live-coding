@@ -29,6 +29,7 @@ if (app.node.tryGetContext('stack') === 'ci-user') {
   const removalPolicy = app.node.tryGetContext('removalPolicy');
   const bucketArn = app.node.tryGetContext('bucketArn');
   new WebAppStack(app, stackName, {
+    sourcePath: app.node.tryGetContext('sourcePath'),
     bucket: bucketArn ?? {
       name: app.node.tryGetContext('bucketName'),
       removalPolicy:
