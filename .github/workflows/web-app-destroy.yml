@@ -1,0 +1,23 @@
+name: Web App Destroy
+
+on:
+  pull_request:
+    branches:
+      - alpha
+      - feature/*
+    types: [closed]
+    paths:
+      - web-app/**
+      - .github/workflows/web-app.yml
+
+jobs:
+  destroy:
+    runs-on: ubuntu-latest
+    steps:
+      - run: yes | npm run cdk -- destroy -c stackName=WebApp-$BRANCH -c bucketName=${BRANCH//\//-} -c sourcePath=$(pwd)/../build
+        if: ${{ github.event_name == 'push' }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: us-east-1
+          BRANCH: ${{ github.ref }}
