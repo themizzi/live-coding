@@ -66,11 +66,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - run: curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
       - run: npm install
       - uses: actions/download-artifact@v2
         with:
           name: build
           path: build
-      - run: npm run cdk -- synth -c stackName=WebApp-${{ github.event.pull_request.number }}
+      - run: 
+          BASE=$(aws cloudformation describe-stacks \
+            --stack-name WebApp-${{ github.event.pull_request.base_ref }}  \
+            --query "Stacks[0].Outputs" \
+            --output json | jq -rc '.[] | select(.OutputKey=="BucketARN") | .OutputValue ')
+          npm run cdk -- synth -c stackName=WebApp-${{ github.event.pull_request.number }} -c bucketArn=${BASE}
         if: ${{ github.event_name == 'pull_request' }}
+        env:
+          AWS_ACCESS_KEY_ID_DEV: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY_DEV: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION_DEV: us-east-2
       - run: npm run cdk -- synth -c stackName=WebApp-${{ github.ref }}
