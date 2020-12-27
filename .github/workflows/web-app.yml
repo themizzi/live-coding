@@ -8,6 +8,13 @@ on:
     paths:
       - web-app/**
       - .github/workflows/web-app.yml
+  push:
+    branches:
+      - alpha
+      - feature/*
+    paths:
+      - web-app/**
+      - .github/workflows/web-app.yml
 
 jobs:
   test:
@@ -64,4 +71,6 @@ jobs:
         with:
           name: build
           path: build
-      - run: npm run cdk -- synth
+      - run: npm run cdk -- synth -c stackName=WebApp-${{ github.event.pull_request.number }}
+        if: ${{ github.event_name == 'pull_request' }}
+      - run: npm run cdk -- synth -c stackName=WebApp-${{ github.ref }}
