@@ -7,7 +7,7 @@ import {
   haveOutput,
 } from '@aws-cdk/assert';
 import {CfnDistribution} from '@aws-cdk/aws-cloudfront';
-import {CfnBucket} from '@aws-cdk/aws-s3';
+import {CfnBucket, Bucket, IBucket} from '@aws-cdk/aws-s3';
 import {App, Fn, RemovalPolicy} from '@aws-cdk/core';
 import {WebAppStack, WebAppStackProps} from './web-app-stack';
 
@@ -98,10 +98,66 @@ describe('Web App Stack', () => {
     );
   });
 
+  test('Outputs supplied bucket ARN', () => {
+    // GIVEN
+    Bucket.fromBucketArn = (scope, id, bucketArn): IBucket => {
+      if (bucketArn === 'arn') {
+        return new Bucket(scope, id);
+      }
+
+      throw 'fromBucketArn not called wih arn';
+    };
+
+    // WHEN
+    const stack = testStack({
+      bucket: {
+        bucketArn: 'arn',
+      },
+    });
+
+    // THEN
+    const bucket = stack.bucket.node.defaultChild as CfnBucket;
+    const logicalId = stack.resolve(bucket.logicalId);
+    expectCDK(stack).to(
+      haveOutput({
+        outputName: 'BucketARN',
+        outputValue: stack.resolve(Fn.getAtt(logicalId, 'Arn').toString()),
+      })
+    );
+  });
+
   test('Outputs bucket name', () => {
     // WHEN
     const stack = testStack({
       bucket: {},
+    });
+
+    // THEN
+    const bucket = stack.bucket.node.defaultChild as CfnBucket;
+    const logicalId = stack.resolve(bucket.logicalId);
+    expectCDK(stack).to(
+      haveOutput({
+        outputName: 'BucketName',
+        outputValue: stack.resolve(Fn.ref(logicalId)),
+      })
+    );
+  });
+
+  test('Outputs supplied bucket name', () => {
+    // GIVEN
+    Bucket.fromBucketArn = (scope, id, bucketArn): IBucket => {
+      if (bucketArn === 'arn') {
+        return new Bucket(scope, id);
+      }
+
+      throw 'fromBucketArn not called wih arn';
+    };
+
+    // WHEN
+    const stack = testStack({
+      bucket: {
+        bucketArn: 'arn',
+      },
     });
 
     // THEN
@@ -151,6 +207,41 @@ describe('Web App Stack', () => {
     // WHEN
     const stack = testStack({
       bucket: {},
+    });
+
+    // THEN
+    const bucket = stack.bucket.node.defaultChild as CfnBucket;
+    const logicalId = stack.resolve(bucket.logicalId);
+    expectCDK(stack).to(
+      haveResourceLike('AWS::CloudFront::Distribution', {
+        DistributionConfig: {
+          Origins: [
+            {
+              DomainName: stack.resolve(
+                Fn.getAtt(logicalId, 'RegionalDomainName')
+              ),
+            },
+          ],
+        },
+      })
+    );
+  });
+
+  test('Has supplied bucket origin', () => {
+    // GIVEN
+    Bucket.fromBucketArn = (scope, id, bucketArn): IBucket => {
+      if (bucketArn === 'arn') {
+        return new Bucket(scope, id);
+      }
+
+      throw 'fromBucketArn not called wih arn';
+    };
+
+    // WHEN
+    const stack = testStack({
+      bucket: {
+        bucketArn: 'arn',
+      },
     });
 
     // THEN
@@ -286,6 +377,33 @@ describe('Web App Stack', () => {
     // WHEN
     const stack = testStack({
       bucket: {},
+    });
+
+    // THEN
+    const bucket = stack.bucket.node.defaultChild as CfnBucket;
+    const logicalId = stack.resolve(bucket.logicalId);
+    expectCDK(stack).to(
+      haveResourceLike('Custom::CDKBucketDeployment', {
+        DestinationBucketName: stack.resolve(Fn.ref(logicalId)),
+      })
+    );
+  });
+
+  test('Has bucket deployment with supplied bucket', () => {
+    // GIVEN
+    Bucket.fromBucketArn = (scope, id, bucketArn): IBucket => {
+      if (bucketArn === 'arn') {
+        return new Bucket(scope, id);
+      }
+
+      throw 'fromBucketArn not called wih arn';
+    };
+
+    // WHEN
+    const stack = testStack({
+      bucket: {
+        bucketArn: 'arn',
+      },
     });
 
     // THEN
