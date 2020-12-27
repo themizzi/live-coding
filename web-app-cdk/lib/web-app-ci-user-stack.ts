@@ -54,14 +54,27 @@ export class WebAppCIUserStack extends Stack {
         effect: Effect.ALLOW,
       });
       bucketStatement.addActions('s3:CreateBucket');
-      bucketStatement.addResources('arn:aws:s3:::web-app*');
+      bucketStatement.addResources(
+        `arn:aws:s3:::${props.user.rolePolicyResourcePrefix ?? ''}*`
+      );
 
       const iamRoleStatement = new PolicyStatement({
         effect: Effect.ALLOW,
       });
-      iamRoleStatement.addActions('iam:CreateRole');
+      iamRoleStatement.addActions(
+        'iam:CreateRole',
+        'iam:AttachRolePolicy',
+        'iam:DetachRolePolicy'
+      );
       iamRoleStatement.addResources(
-        `arn:aws:iam:::role/${props.user.rolePolicyResourcePrefix ?? ''}*`
+        `arn:aws:iam::*:role/${props.user.rolePolicyResourcePrefix ?? ''}*`
+      );
+
+      const cloudfrontStatement = new PolicyStatement({
+        effect: Effect.ALLOW,
+      });
+      cloudfrontStatement.addActions(
+        'cloudfront:CreateCloudFrontOriginAccessIdentity'
       );
 
       const toolkitStatement = new PolicyStatement({
