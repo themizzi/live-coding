@@ -17,6 +17,12 @@ on:
       - .github/workflows/web-app.yml
 
 jobs:
+  pr_number:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo $PR_NUMBER
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
   test:
     defaults:
       run:
