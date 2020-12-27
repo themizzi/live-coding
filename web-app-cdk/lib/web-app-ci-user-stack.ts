@@ -49,6 +49,12 @@ export class WebAppCIUserStack extends Stack {
         stackStatement.addResources(...resources);
       }
 
+      const bucketStatement = new PolicyStatement({
+        effect: Effect.ALLOW,
+      });
+      bucketStatement.addActions('s3:CreateBucket');
+      bucketStatement.addResources('arn:aws:s3:::web-app*');
+
       const toolkitStatement = new PolicyStatement({
         effect: Effect.ALLOW,
       });
@@ -72,7 +78,12 @@ export class WebAppCIUserStack extends Stack {
 
       const policyDocument = new PolicyDocument({
         assignSids: true,
-        statements: [stackStatement, toolkitStatement, stagingBucketStatement],
+        statements: [
+          stackStatement,
+          toolkitStatement,
+          stagingBucketStatement,
+          bucketStatement,
+        ],
       });
 
       const policy = new Policy(this, 'WebAppCIUserPolicy', {
