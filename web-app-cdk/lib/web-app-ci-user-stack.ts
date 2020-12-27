@@ -54,12 +54,20 @@ export class WebAppCIUserStack extends Stack {
       });
       toolkitStatement.addActions('cloudformation:DescribeStacks');
       toolkitStatement.addResources(
-        `arn:aws:cloudformation:*:${props.env?.account}:stack/CDKToolkit/*`
+        `arn:aws:cloudformation:*:${accountNumber}:stack/CDKToolkit/*`
+      );
+
+      const stagingBucketStatement = new PolicyStatement({
+        effect: Effect.ALLOW,
+      });
+      stagingBucketStatement.addActions('s3:GetBucketLocation');
+      stagingBucketStatement.addResources(
+        'arn:aws:s3:::cdktoolkit-stagingbucket-*'
       );
 
       const policyDocument = new PolicyDocument({
         assignSids: true,
-        statements: [stackStatement, toolkitStatement],
+        statements: [stackStatement, toolkitStatement, stagingBucketStatement],
       });
 
       const policy = new Policy(this, 'WebAppCIUserPolicy', {
