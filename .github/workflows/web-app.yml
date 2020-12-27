@@ -80,7 +80,7 @@ jobs:
           npm run cdk -- synth -c stackName=WebApp-${{ github.event.pull_request.number }} -c bucketArn=${BASE}
         if: ${{ github.event_name == 'pull_request' }}
         env:
-          AWS_ACCESS_KEY_ID_DEV: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY_DEV: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: us-east-1
       - run: npm run cdk -- synth -c stackName=WebApp-${{ github.ref }}
