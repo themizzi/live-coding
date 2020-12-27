@@ -78,7 +78,7 @@ jobs:
             --stack-name WebApp-$BASE_REF 
             --query "Stacks[0].Outputs" 
             --output json | jq -rc '.[] | select(.OutputKey=="BucketARN") | .OutputValue ')
-          npm run cdk -- synth -c stackName=WebApp-$PR_NUMBER -c bucketArn=$BASE
+          npm run cdk -- synth -c stackName=WebApp-$PR_NUMBER -c bucketArn=$BASE -c bucketPrefix=WebApp-$PR_NUMBER
         if: ${{ github.event_name == 'pull_request' }}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
