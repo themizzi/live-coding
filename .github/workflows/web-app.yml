@@ -59,7 +59,7 @@ jobs:
           name: build
           path: web-app/dist/web-app
   deploy:
-    needs: ['test', 'build']
+    needs: ['build']
     defaults:
       run:
         working-directory: 'web-app-cdk'
