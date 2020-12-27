@@ -24,9 +24,9 @@ if (app.node.tryGetContext('stack') === 'ci-user') {
 } else {
   const stackName = app.node.tryGetContext('stackName') ?? 'WebAppStack';
   const removalPolicy = app.node.tryGetContext('removalPolicy');
+  const bucketArn = app.node.tryGetContext('bucketArn');
   new WebAppStack(app, stackName, {
-    bucket: {
-      bucketArn: app.node.tryGetContext('bucketArn'),
+    bucket: bucketArn ?? {
       removalPolicy:
         removalPolicy === 'DESTROY'
           ? RemovalPolicy.DESTROY

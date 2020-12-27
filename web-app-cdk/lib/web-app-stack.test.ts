@@ -110,9 +110,7 @@ describe('Web App Stack', () => {
 
     // WHEN
     const stack = testStack({
-      bucket: {
-        bucketArn: 'arn',
-      },
+      bucket: 'arn',
     });
 
     // THEN
@@ -155,9 +153,7 @@ describe('Web App Stack', () => {
 
     // WHEN
     const stack = testStack({
-      bucket: {
-        bucketArn: 'arn',
-      },
+      bucket: 'arn',
     });
 
     // THEN
@@ -239,9 +235,7 @@ describe('Web App Stack', () => {
 
     // WHEN
     const stack = testStack({
-      bucket: {
-        bucketArn: 'arn',
-      },
+      bucket: 'arn',
     });
 
     // THEN
@@ -397,9 +391,7 @@ describe('Web App Stack', () => {
 
     // WHEN
     const stack = testStack({
-      bucket: {
-        bucketArn: 'arn',
-      },
+      bucket: 'arn',
     });
 
     // THEN
