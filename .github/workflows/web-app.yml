@@ -73,11 +73,11 @@ jobs:
           name: build
           path: build
       - run: 
-          BASE=$(aws cloudformation describe-stacks
+          BUCKET_ARN=$(aws cloudformation describe-stacks
             --stack-name WebApp-${BASE_REF//\//-} 
             --query "Stacks[0].Outputs" 
             --output json | jq -rc '.[] | select(.OutputKey=="BucketARN") | .OutputValue ')
-          npm run cdk -- synth -c stackName=WebApp-$PR_NUMBER -c bucketArn=$BASE -c bucketPrefix=WebApp-$PR_NUMBER -c removalPolicy=DESTROY
+          npm run cdk -- synth -c stackName=WebApp-$PR_NUMBER -c bucketArn=$BUCKET_ARN -c bucketPrefix=WebApp-$PR_NUMBER -c removalPolicy=DESTROY
         if: ${{ github.event_name == 'pull_request' }}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
