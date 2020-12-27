@@ -3,6 +3,7 @@ import 'source-map-support/register';
 import * as cdk from '@aws-cdk/core';
 import {WebAppStack} from '../lib/web-app-stack';
 import {WebAppCIUserStack} from '../lib/web-app-ci-user-stack';
+import {RemovalPolicy} from '@aws-cdk/core';
 
 const app = new cdk.App();
 
@@ -22,5 +23,19 @@ if (app.node.tryGetContext('stack') === 'ci-user') {
   });
 } else {
   const stackName = app.node.tryGetContext('stackName') ?? 'WebAppStack';
-  new WebAppStack(app, stackName);
+  const removalPolicy = app.node.tryGetContext('removalPolicy');
+  new WebAppStack(app, stackName, {
+    bucket: {
+      bucketArn: app.node.tryGetContext('bucketArn'),
+      prefix: app.node.tryGetContext('bucketPrefix'),
+      removalPolicy:
+        removalPolicy === 'DESTROY'
+          ? RemovalPolicy.DESTROY
+          : removalPolicy === 'SNAPSHOT'
+          ? RemovalPolicy.SNAPSHOT
+          : removalPolicy === 'RETAIN'
+          ? RemovalPolicy.RETAIN
+          : undefined,
+    },
+  });
 }
