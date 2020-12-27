@@ -82,5 +82,5 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID_DEV: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY_DEV: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION_DEV: us-east-2
+          AWS_DEFAULT_REGION: us-east-1
       - run: npm run cdk -- synth -c stackName=WebApp-${{ github.ref }}
