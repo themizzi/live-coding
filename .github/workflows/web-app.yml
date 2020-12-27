@@ -80,7 +80,7 @@ jobs:
           path: build
       - run: 
           BASE=$(aws cloudformation describe-stacks
-            --stack-name WebApp-${{ github.event.pull_request.base_ref }} 
+            --stack-name WebApp-$PR_NUMBER 
             --query "Stacks[0].Outputs" 
             --output json | jq -rc '.[] | select(.OutputKey=="BucketARN") | .OutputValue ')
           npm run cdk -- synth -c stackName=WebApp-$PR_NUMBER -c bucketArn=$BASE
