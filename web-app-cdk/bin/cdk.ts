@@ -27,7 +27,6 @@ if (app.node.tryGetContext('stack') === 'ci-user') {
   new WebAppStack(app, stackName, {
     bucket: {
       bucketArn: app.node.tryGetContext('bucketArn'),
-      prefix: app.node.tryGetContext('bucketPrefix'),
       removalPolicy:
         removalPolicy === 'DESTROY'
           ? RemovalPolicy.DESTROY
@@ -37,5 +36,6 @@ if (app.node.tryGetContext('stack') === 'ci-user') {
           ? RemovalPolicy.RETAIN
           : undefined,
     },
+    prefix: app.node.tryGetContext('bucketPrefix'),
   });
 }
