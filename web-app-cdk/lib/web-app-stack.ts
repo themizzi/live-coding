@@ -6,7 +6,7 @@ import {
 } from '@aws-cdk/aws-cloudfront';
 import {S3Origin} from '@aws-cdk/aws-cloudfront-origins';
 import {BlockPublicAccess, Bucket, IBucket} from '@aws-cdk/aws-s3';
-import {BucketDeployment, Source} from '@aws-cdk/aws-s3-deployment';
+import {BucketDeployment, ISource, Source} from '@aws-cdk/aws-s3-deployment';
 import {
   CfnOutput,
   Construct,
@@ -14,7 +14,6 @@ import {
   Stack,
   StackProps,
 } from '@aws-cdk/core';
-import {join} from 'path';
 
 export interface WebAppStackProps extends StackProps {
   bucket?: {
@@ -66,13 +65,12 @@ export class WebAppStack extends Stack {
         value: this.distribution.distributionDomainName,
       });
 
+      const sources: ISource[] = [];
+      if (props.bucket.sourcePath) {
+        sources.push(Source.asset(props.bucket.sourcePath));
+      }
       new BucketDeployment(this, 'WebAppDeployment', {
-        sources: [
-          Source.asset(
-            props.bucket.sourcePath ??
-              join(__dirname, '..', '..', 'web-app', 'dist', 'web-app')
-          ),
-        ],
+        sources: sources,
         distribution: this.distribution,
         distributionPaths: ['/*'],
         destinationBucket: this.bucket,
