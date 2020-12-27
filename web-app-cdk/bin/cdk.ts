@@ -31,7 +31,6 @@ if (app.node.tryGetContext('stack') === 'ci-user') {
   new WebAppStack(app, stackName, {
     sourcePath: app.node.tryGetContext('sourcePath'),
     bucket: bucketArn ?? {
-      name: app.node.tryGetContext('bucketName'),
       removalPolicy:
         removalPolicy === 'DESTROY'
           ? RemovalPolicy.DESTROY
