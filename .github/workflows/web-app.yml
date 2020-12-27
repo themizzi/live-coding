@@ -15,6 +15,7 @@ on:
       - deploy-web-app
     paths:
       - web-app/**
+      - web-app-cdk/**
       - .github/workflows/web-app.yml
 
 jobs:
