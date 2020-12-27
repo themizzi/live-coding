@@ -285,9 +285,7 @@ describe('Web App Stack', () => {
   test('Uses supplied origin path', () => {
     // WHEN
     const stack = testStack({
-      bucket: {
-        prefix: 'prefix',
-      },
+      prefix: 'prefix',
     });
 
     // THEN
@@ -307,9 +305,7 @@ describe('Web App Stack', () => {
   test('Has viewer policy of https redirect', () => {
     // WHEN
     const stack = testStack({
-      bucket: {
-        prefix: 'prefix',
-      },
+      prefix: 'prefix',
     });
 
     // THEN
@@ -433,9 +429,7 @@ describe('Web App Stack', () => {
   test('Has bucket deployment with bucket supplied prefix', () => {
     // WHEN
     const stack = testStack({
-      bucket: {
-        prefix: 'prefix',
-      },
+      prefix: 'prefix',
     });
 
     // THEN

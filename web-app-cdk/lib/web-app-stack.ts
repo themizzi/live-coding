@@ -18,10 +18,10 @@ import {
 export interface WebAppStackProps extends StackProps {
   bucket?: {
     bucketArn?: string;
-    prefix?: string;
     removalPolicy?: RemovalPolicy;
     sourcePath?: string;
   };
+  prefix?: string;
 }
 export class WebAppStack extends Stack {
   readonly bucket: IBucket;
@@ -50,12 +50,14 @@ export class WebAppStack extends Stack {
         value: this.bucket.bucketName,
       });
 
+      const prefix = props.prefix ?? 'default';
+
       this.distribution = new Distribution(this, 'WebAppDistribution', {
         priceClass: PriceClass.PRICE_CLASS_100,
         defaultRootObject: 'index.html',
         defaultBehavior: {
           origin: new S3Origin(this.bucket, {
-            originPath: `/${props.bucket.prefix ?? 'default'}`,
+            originPath: `/${prefix}`,
           }),
           viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         },
@@ -74,7 +76,7 @@ export class WebAppStack extends Stack {
         distribution: this.distribution,
         distributionPaths: ['/*'],
         destinationBucket: this.bucket,
-        destinationKeyPrefix: props.bucket.prefix ?? 'default',
+        destinationKeyPrefix: prefix,
       });
     }
   }
