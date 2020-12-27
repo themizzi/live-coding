@@ -11,6 +11,9 @@ on:
 
 jobs:
   test:
+    defaults:
+      run:
+        working-directory: web-app
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -18,11 +21,7 @@ jobs:
         with:
           node-version: '14'
       - run: npm install
-        working-directory: web-app
-      - run: npm run lint
-        working-directory: web-app
       - run: npm run test -- --no-watch --code-coverage
-        working-directory: web-app
       - uses: cypress-io/github-action@v2
         with:
           start: npm start
@@ -51,7 +50,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: build
-          path: dist/web-app
+          path: web-app/dist/web-app
   deploy:
     needs: ['test', 'build']
     defaults:
