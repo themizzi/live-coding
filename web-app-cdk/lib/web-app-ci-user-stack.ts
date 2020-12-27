@@ -60,7 +60,12 @@ export class WebAppCIUserStack extends Stack {
       const stagingBucketStatement = new PolicyStatement({
         effect: Effect.ALLOW,
       });
-      stagingBucketStatement.addActions('s3:GetBucketLocation');
+      stagingBucketStatement.addActions(
+        's3:GetBucketLocation',
+        's3:PutObject',
+        's3:GetObject',
+        's3:ListBucket'
+      );
       stagingBucketStatement.addResources(
         'arn:aws:s3:::cdktoolkit-stagingbucket-*'
       );
