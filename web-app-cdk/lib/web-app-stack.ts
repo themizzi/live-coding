@@ -19,6 +19,7 @@ export interface WebAppStackProps extends StackProps {
   bucket?:
     | {
         removalPolicy?: RemovalPolicy;
+        name?: string;
       }
     | string;
   sourcePath?: string;
@@ -38,6 +39,9 @@ export class WebAppStack extends Stack {
       typeof props.bucket === 'string'
         ? Bucket.fromBucketArn(this, 'WebAppStackBucket', props.bucket)
         : new Bucket(this, 'WebAppStackBucket', {
+            bucketName: `web-app${props.bucket?.name ? '-' : ''}${
+              props.bucket?.name ?? ''
+            }`,
             removalPolicy: props.bucket?.removalPolicy ?? RemovalPolicy.RETAIN,
             blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
           });
