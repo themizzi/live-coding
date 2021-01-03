@@ -21,7 +21,7 @@ export class WebAppCIUserStack extends Stack {
     super(scope, id, props);
 
     if (props?.user) {
-      const accountNumber = props.user.accountNumber ?? '';
+      const accountNumber = props.user.accountNumber ?? '*';
       const resourcePrefix = props.user.rolePolicyResourcePrefix ?? '';
       const stackStatement = new PolicyStatement({
         effect: Effect.ALLOW,
@@ -38,10 +38,10 @@ export class WebAppCIUserStack extends Stack {
       );
       stackStatement.addResources(
         `arn:aws:cloudformation:*:${
-          accountNumber ?? ''
+          accountNumber ?? '*'
         }:stack/${resourcePrefix}*/*`,
         `arn:aws:cloudformation:*:${
-          accountNumber ?? ''
+          accountNumber ?? '*'
         }:stack/${resourcePrefix}*`
       );
 
