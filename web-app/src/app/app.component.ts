@@ -5,6 +5,4 @@ import {Component} from '@angular/core';
   template: '',
   styles: [],
 })
-export class AppComponent {
-  title = 'web-app';
-}
+export class AppComponent {}
