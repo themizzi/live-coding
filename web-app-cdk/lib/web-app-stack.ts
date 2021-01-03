@@ -16,12 +16,14 @@ import {
 } from '@aws-cdk/core';
 
 export interface WebAppStackProps extends StackProps {
-  bucket?: {
-    bucketArn?: string;
-    prefix?: string;
-    removalPolicy?: RemovalPolicy;
-    sourcePath?: string;
-  };
+  bucket?:
+    | {
+        removalPolicy?: RemovalPolicy;
+      }
+    | string;
+  sourcePath?: string;
+  bucketArn?: string;
+  prefix?: string;
 }
 export class WebAppStack extends Stack {
   readonly bucket: IBucket;
@@ -30,52 +32,51 @@ export class WebAppStack extends Stack {
   constructor(scope: Construct, id: string, props?: WebAppStackProps) {
     super(scope, id, props);
 
-    if (props?.bucket) {
-      this.bucket = props.bucket.bucketArn
-        ? Bucket.fromBucketArn(
-            this,
-            'WebAppStackBucket',
-            props.bucket.bucketArn
-          )
+    if (!props) return;
+
+    this.bucket =
+      typeof props.bucket === 'string'
+        ? Bucket.fromBucketArn(this, 'WebAppStackBucket', props.bucket)
         : new Bucket(this, 'WebAppStackBucket', {
-            removalPolicy: props.bucket.removalPolicy ?? RemovalPolicy.RETAIN,
+            removalPolicy: props.bucket?.removalPolicy ?? RemovalPolicy.RETAIN,
             blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
           });
 
-      new CfnOutput(this, 'BucketARN', {
-        value: this.bucket.bucketArn,
-      });
+    new CfnOutput(this, 'BucketARN', {
+      value: this.bucket.bucketArn,
+    });
 
-      new CfnOutput(this, 'BucketName', {
-        value: this.bucket.bucketName,
-      });
+    new CfnOutput(this, 'BucketName', {
+      value: this.bucket.bucketName,
+    });
 
-      this.distribution = new Distribution(this, 'WebAppDistribution', {
-        priceClass: PriceClass.PRICE_CLASS_100,
-        defaultRootObject: 'index.html',
-        defaultBehavior: {
-          origin: new S3Origin(this.bucket, {
-            originPath: `/${props.bucket.prefix ?? 'default'}`,
-          }),
-          viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-        },
-      });
+    const prefix = props?.prefix ?? 'default';
 
-      new CfnOutput(this, 'Domain', {
-        value: this.distribution.distributionDomainName,
-      });
+    this.distribution = new Distribution(this, 'WebAppDistribution', {
+      priceClass: PriceClass.PRICE_CLASS_100,
+      defaultRootObject: 'index.html',
+      defaultBehavior: {
+        origin: new S3Origin(this.bucket, {
+          originPath: `/${prefix}`,
+        }),
+        viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+      },
+    });
 
-      const sources: ISource[] = [];
-      if (props.bucket.sourcePath) {
-        sources.push(Source.asset(props.bucket.sourcePath));
-      }
-      new BucketDeployment(this, 'WebAppDeployment', {
-        sources: sources,
-        distribution: this.distribution,
-        distributionPaths: ['/*'],
-        destinationBucket: this.bucket,
-        destinationKeyPrefix: props.bucket.prefix ?? 'default',
-      });
+    new CfnOutput(this, 'Domain', {
+      value: this.distribution.distributionDomainName,
+    });
+
+    const sources: ISource[] = [];
+    if (props.sourcePath) {
+      sources.push(Source.asset(props.sourcePath));
     }
+    new BucketDeployment(this, 'WebAppDeployment', {
+      sources: sources,
+      distribution: this.distribution,
+      distributionPaths: ['/*'],
+      destinationBucket: this.bucket,
+      destinationKeyPrefix: prefix,
+    });
   }
 }

@@ -6,10 +6,23 @@ on:
       - alpha
       - feature/*
     paths:
-      - 'web-app/**'
+      - web-app/**
+      - .github/workflows/web-app.yml
+  push:
+    branches:
+      - alpha
+      - feature/*
+      - deploy-web-app
+    paths:
+      - web-app/**
+      - web-app-cdk/**
+      - .github/workflows/web-app.yml
 
 jobs:
   test:
+    defaults:
+      run:
+        working-directory: web-app
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -17,11 +30,7 @@ jobs:
         with:
           node-version: '14'
       - run: npm install
-        working-directory: web-app
-      - run: npm run lint
-        working-directory: web-app
       - run: npm run test -- --no-watch --code-coverage
-        working-directory: web-app
       - uses: cypress-io/github-action@v2
         with:
           start: npm start
@@ -35,3 +44,52 @@ jobs:
         with:
           name: cypress screenshot artifacts
           path: web-app/cypress/screenshots
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web-app
+    steps: 
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: '14'
+      - run: npm install
+      - run: npm run build
+      - uses: actions/upload-artifact@v2
+        with:
+          name: build
+          path: web-app/dist/web-app
+  deploy:
+    needs: ['build']
+    defaults:
+      run:
+        working-directory: 'web-app-cdk'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm install
+      - uses: actions/download-artifact@v2
+        with:
+          name: build
+          path: build
+      - run: 
+          BUCKET_ARN=$(aws cloudformation describe-stacks
+            --stack-name WebApp-${BASE_REF//\//-} 
+            --query "Stacks[0].Outputs" 
+            --output json | jq -rc '.[] | select(.OutputKey=="BucketARN") | .OutputValue ')
+          npm run cdk -- synth -c stackName=WebApp-$PR_NUMBER -c bucketArn=$BUCKET_ARN -c bucketPrefix=WebApp-$PR_NUMBER -c removalPolicy=DESTROY
+        if: ${{ github.event_name == 'pull_request' }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: us-east-1
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          BASE_REF: ${{ github.base_ref }}
+      - run: npm run cdk -- deploy -c stackName=WebApp-${BRANCH//\//-} -c sourcePath=$(pwd)/../build --require-approval never
+        if: ${{ github.event_name == 'push' }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: us-east-1
+          BRANCH: ${{ github.ref }}
