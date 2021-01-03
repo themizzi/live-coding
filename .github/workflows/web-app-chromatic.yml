@@ -1,0 +1,23 @@
+name: 'Chromatic'
+
+on:
+  pull_request:
+    branches:
+      - alpha
+      - feature/*
+    paths:
+      - 'web-app/**'
+
+jobs:
+  chromatic-deployment:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web-app
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v2-beta
+      - run: npm install
+      - run: npm run chromatic -- --project-token ${PROJECT_TOKEN}
+        env:
+          PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
