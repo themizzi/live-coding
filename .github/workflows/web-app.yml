@@ -12,7 +12,7 @@ on:
     branches:
       - alpha
       - feature/*
-      - deploy-web-app
+
     paths:
       - web-app/**
       - web-app-cdk/**

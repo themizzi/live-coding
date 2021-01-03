@@ -13,7 +13,11 @@ on:
 jobs:
   destroy:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web-app-cdk
     steps:
+      - run: npm install
       - run: yes | npm run cdk -- destroy -c stackName=WebApp-${BRANCH//\//-} -c bucketName=${BRANCH//\//-} -c sourcePath=$(pwd)/../build
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
