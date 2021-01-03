@@ -10,7 +10,6 @@ import {
 export interface CIUserStackProps extends StackProps {
   user?: {
     username?: string;
-    resourceStackNames?: string[];
     regions?: string[];
     accountNumber?: string;
     rolePolicyResourcePrefix?: string;
@@ -22,6 +21,8 @@ export class WebAppCIUserStack extends Stack {
     super(scope, id, props);
 
     if (props?.user) {
+      const accountNumber = props.user.accountNumber ?? '';
+      const resourcePrefix = props.user.rolePolicyResourcePrefix ?? '';
       const stackStatement = new PolicyStatement({
         effect: Effect.ALLOW,
       });
@@ -35,20 +36,14 @@ export class WebAppCIUserStack extends Stack {
         'cloudformation:DescribeChangeSet',
         'cloudformation:ExecuteChangeSet'
       );
-      const resourceStackNames = props.user.resourceStackNames ?? ['*'];
-      const regions = props.user.regions ?? ['*'];
-      const accountNumber = props.user.accountNumber ?? '*';
-      const resources: string[] = [];
-      resourceStackNames.forEach(x =>
-        regions.forEach(y =>
-          resources.push(
-            `arn:aws:cloudformation:${y}:${accountNumber}:stack/${x}/*`
-          )
-        )
+      stackStatement.addResources(
+        `arn:aws:cloudformation:*:${
+          accountNumber ?? ''
+        }:stack/${resourcePrefix}*/*`,
+        `arn:aws:cloudformation:*:${
+          accountNumber ?? ''
+        }:stack/${resourcePrefix}*`
       );
-      if (resources.length > 0) {
-        stackStatement.addResources(...resources);
-      }
 
       const bucketStatement = new PolicyStatement({
         effect: Effect.ALLOW,
@@ -61,11 +56,7 @@ export class WebAppCIUserStack extends Stack {
         's3:DeleteBucketPolicy'
       );
       bucketStatement.addResources(
-        `arn:aws:s3:::${
-          props.user.rolePolicyResourcePrefix
-            ? props.user.rolePolicyResourcePrefix.toLowerCase()
-            : ''
-        }*`
+        `arn:aws:s3:::${resourcePrefix.toLowerCase()}*`
       );
 
       const iamRoleStatement = new PolicyStatement({
@@ -82,9 +73,7 @@ export class WebAppCIUserStack extends Stack {
         'iam:GetRole',
         'iam:PassRole'
       );
-      iamRoleStatement.addResources(
-        `arn:aws:iam::*:role/${props.user.rolePolicyResourcePrefix ?? ''}*`
-      );
+      iamRoleStatement.addResources(`arn:aws:iam::*:role/${resourcePrefix}*`);
 
       const cloudfrontStatement = new PolicyStatement({
         effect: Effect.ALLOW,
@@ -113,9 +102,7 @@ export class WebAppCIUserStack extends Stack {
         'lambda:InvokeFunction'
       );
       lambdaStatement.addResources(
-        `arn:aws:lambda:*:*:function:${
-          props.user.rolePolicyResourcePrefix ?? ''
-        }*`
+        `arn:aws:lambda:*:*:function:${resourcePrefix}*`
       );
 
       const toolkitStatement = new PolicyStatement({
