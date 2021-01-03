@@ -1,0 +1,23 @@
+name: Web App CDK
+
+on:
+  pull_request:
+    branches:
+      - alpha
+      - feature/*
+    paths:
+      - 'web-app-cdk/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web-app-cdk
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: '14'
+      - run: npm install
+      - run: npm test
