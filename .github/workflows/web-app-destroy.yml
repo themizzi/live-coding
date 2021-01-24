@@ -20,7 +20,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2-beta
       - run: npm install
-      - run: yes | npm run cdk -- destroy -c stackName=WebApp-${BRANCH//\//-} -c bucketName=${BRANCH//\//-} -c sourcePath=$(pwd)/../build
+      - run: yes | npm run cdk -- destroy -c stackName=WebApp-${GITHUB_HEAD_REF//\//-} --force
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
