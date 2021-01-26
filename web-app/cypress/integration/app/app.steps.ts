@@ -1,4 +1,4 @@
-const {Then, When, Before} = require('cypress-cucumber-preprocessor/steps');
+import {Then, When, Before} from 'cypress-cucumber-preprocessor/steps';
 
 Before(() => {
   Cypress.on('window:before:load', win => {

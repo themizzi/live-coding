@@ -13,12 +13,19 @@
 // the project's config changing)
 
 const cucumber = require('cypress-cucumber-preprocessor').default;
-
+const browserify = require('@cypress/browserify-preprocessor');
+const resolve = require('resolve');
+const path = require('path');
 /**
  * @type {Cypress.PluginConfig}
  */
 module.exports = on => {
+  const options = {
+    ...browserify.defaultOptions,
+    typescript: resolve.sync('typescript', { baseDir: path.join(__dirname, '..') }),
+  };
+
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
-  on('file:preprocessor', cucumber());
+  on('file:preprocessor', cucumber(options));
 };

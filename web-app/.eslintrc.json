@@ -6,6 +6,12 @@
       "rules": {
         "node/no-unpublished-require": "off"
       }
+    },
+    {
+      "files": "**/*.stores.ts",
+      "rules": {
+        "node/no-unpublished-import": "off"
+      }
     }
   ]
 }

@@ -1,7 +1,8 @@
 {
   "extends": "../.eslintrc.json",
   "rules": {
-    "node/no-unpublished-require": "off"
+    "node/no-unpublished-require": "off",
+    "node/no-unpublished-import": "off"
   },
   "env": {
     "browser": true,
